@@ -18,15 +18,24 @@
    * @return {string} details containing all of the spells information.
    */
 
+// construction of Spell
 function Spell(name,cost, description){
   this.name = name;
   this.cost = cost;
   this.description = description;
   this.printDetails = function () {};
+  // works in this way BUT not god practice bc it will be a property for all instance
+  // so this particular methode suppose to be part of the 'call's parameter line e.g. in line 42
+  // this.getDetails = function(){
+  //   const _allDetails = this.name + '[' + this.cost + ']' + this.description;
+  //   return _allDetails;
+  // };
 }
-
+// adding methods to prototype outside of definition >> all instance inherir it
+// but no need to pass it as a parameter when creating a new subclass
 Spell.prototype.getDetails = function(){
-  return this.name + '[' + this.cost + ']' + this.description;
+  //const _allDetails = this.name + '[' + this.cost + ']' + this.description;
+  return this.name + '[' + this.cost + ']' + this.description; //_allDetails;
   };
 
 /** 2
@@ -54,11 +63,13 @@ Spell.prototype.getDetails = function(){
  * @property {string} description
  */
 
+// class DamageSpell extends Spell >> 2 steps connection
 function DamageSpell(name, cost, damage, description) {
   Spell.call(this, name, cost, description);
   this.damage = damage;
 }
 
+// linking the prototypes DamageSpell inherit all properties from Spell
 DamageSpell.prototype = Object.create(Spell.prototype, {
   constructor : DamageSpell
 });
@@ -154,24 +165,30 @@ Spellcaster.prototype.spendMana = function (cost) {
    * @return {boolean}                    Whether the spell was successfully cast.
    */
 
-Spellcaster.prototype.invoke = function(spellObject, target) {
-  if (!(spellObject instanceof Spell) && (!(spellObject instanceof DamageSpell))) {
-    return false;
-  }
-  if ((spellObject instanceof Spell) && (!(spellObject instanceof DamageSpell))) {
-    return this.spendMana(spellObject.cost);
-  }
-  if ((spellObject instanceof Spell) && (spellObject instanceof DamageSpell)) {
-    if (!(target instanceof Spellcaster)) {
+   Spellcaster.prototype.invoke = function(spellObject, target) {
+
+    console.log('Spell before checking', spellObject instanceof Spell);
+    console.log('DamageSpell before checking', spellObject instanceof DamageSpell);
+    // not case
+    if (!(spellObject instanceof Spell) && (!(spellObject instanceof DamageSpell))) {
       return false;
     }
-    if (this.spendMana(spellObject.cost)){
-      target.inflictDamage(spellObject.damage);
-      return true;
-    } else {
-      return false;
+    // just spell object instance
+    if ((spellObject instanceof Spell) && (!(spellObject instanceof DamageSpell))) {
+      return this.spendMana(spellObject.cost);
     }
-  }
-};
+    // damagespell object instance
+    if ((spellObject instanceof Spell) && (spellObject instanceof DamageSpell)) {
+
+      if (!(target instanceof Spellcaster)) { return false; }
+
+      if (this.spendMana(spellObject.cost)){
+          target.inflictDamage(spellObject.damage);
+          return true;
+        } else { return false;}
+
+    }
+
+   };
 
 
