@@ -26,8 +26,8 @@ function Spell(name,cost, description){
 }
 
 Spell.prototype.getDetails = function(){
-  return this.name + '[' + this.cost + ']' + this.description;
-  };
+  return this.name + '[' + this.cost + ']' + this.description
+};
 
 /** 2
  * A spell that deals damage.
@@ -113,15 +113,15 @@ Spellcaster.prototype.inflictDamage = function (damage) {
   if ((this.health - damage) > 0) {
     this.health = this.health - damage;
   } else {
-      this.isAlive = false;
-      this.health = 0;
-    }
+    this.isAlive = false;
+    this.health = 0;
+  }
 };
 
 Spellcaster.prototype.spendMana = function (cost) {
-
-  if ((this.mana - cost) >= 0) {
-    this.mana = this.mana - cost;
+  const leftMana = this.mana - cost;
+  if (leftMana >= 0) {
+    this.mana = leftMana;
     return true;
   } else {
     return false;
